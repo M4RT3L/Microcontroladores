@@ -1,0 +1,49 @@
+#include "p16F628a.inc"
+ __CONFIG _FOSC_INTOSCCLK & _WDTE_OFF & _PWRTE_OFF & _MCLRE_OFF & _BOREN_OFF & _LVP_OFF & _CPD_OFF & _CP_OFF      
+RES_VECT  CODE    0x0000
+    goto start
+MAIN_PROG CODE
+
+num1 equ 0x30
+num2 equ 0x31
+resultado equ 0x32
+
+
+start
+    movlw 0x07
+    movwf CMCON
+    bcf STATUS, RP1
+    bsf STATUS, RP0
+    movlw b'00000000'
+    movwf TRISB
+    bcf STATUS, RP0
+    goto inicio
+    
+inicio
+
+    movfw PORTA
+    movwf num1
+    movwf num2
+
+    bcf num1,4
+    bcf num1,5
+    bcf num1,6
+    bcf num1,7
+
+    bcf num2,0
+    bcf num2,1
+    bcf num2,2
+    bcf num2,3
+    swapf num2
+    movlw d'0'
+    
+multiplicacion
+    addwf num1,0
+    decfsz num2
+    goto multiplicacion
+
+    movwf resultado 
+    movfw resultado
+    movwf PORTB
+    
+END
